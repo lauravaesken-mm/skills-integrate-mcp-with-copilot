@@ -2,6 +2,8 @@
 
 A super simple FastAPI application that allows students to view and sign up for extracurricular activities.
 
+The app now uses SQLAlchemy ORM with persistent storage (MySQL-ready, with SQLite as a local default).
+
 ## Features
 
 - View all available extracurricular activities
@@ -12,16 +14,24 @@ A super simple FastAPI application that allows students to view and sign up for 
 1. Install the dependencies:
 
    ```
-   pip install fastapi uvicorn
+   pip install -r ../requirements.txt
    ```
 
-2. Run the application:
+2. Optional: configure MySQL with an environment variable:
 
    ```
-   python app.py
+   export DATABASE_URL="mysql+pymysql://user:password@localhost:3306/mergington"
    ```
 
-3. Open your browser and go to:
+   If `DATABASE_URL` is not set, the app uses a local SQLite database at `school.db`.
+
+3. Run the application:
+
+   ```
+   uvicorn app:app --reload
+   ```
+
+4. Open your browser and go to:
    - API documentation: http://localhost:8000/docs
    - Alternative documentation: http://localhost:8000/redoc
 
@@ -43,8 +53,12 @@ The application uses a simple data model with meaningful identifiers:
    - Maximum number of participants allowed
    - List of student emails who are signed up
 
-2. **Students** - Uses email as identifier:
+2. **Users** - Uses email as identifier:
    - Name
-   - Grade level
+   - Role
 
-All data is stored in memory, which means data will be reset when the server restarts.
+3. **Memberships** - Tracks which users are enrolled in which activities.
+
+4. **Club Requests** - Tracks pending and resolved membership requests.
+
+Data is persisted in the configured database, so it remains available across server restarts.
